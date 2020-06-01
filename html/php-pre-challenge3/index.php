@@ -35,9 +35,9 @@ try{
 	http_response_code(500);
 }
 
-//GETパラメータの検証、数字のみ && 0より大きいか、エラー時は404response
+//GETパラメータの検証、数字のみ && 0より大きいか、エラー時は400response
 if(!preg_match("/^[0-9]+$/",$limit)|| $limit <= 0){
-	http_response_code(404);
+	http_response_code(400);
 }
 
 //DBから値を取ってくる
