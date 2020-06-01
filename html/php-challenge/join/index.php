@@ -20,7 +20,7 @@ if (!empty($_POST)) {
 	$fileName = $_FILES['image']['name'];
 	if (!empty($fileName)) {
 		$ext = substr($fileName, -3);
-		if ($ext != 'jpg' && $ext != 'gif') {
+		if ($ext != 'jpg' && $ext != 'gif' && $ext != 'png') {
 			$error['image'] = 'type';
 		}
 	}
@@ -102,7 +102,7 @@ if ($_REQUEST['action'] == 'rewrite') {
 		<dd>
         	<input type="file" name="image" size="35" value="test"  />
         	<?php if ($error['image'] == 'type'): ?>
-			<p class="error">* 写真などは「.gif」または「.jpg」の画像を指定してください</p>
+			<p class="error">* 写真などは「.gif」, 「.png」または「.jpg」の画像を指定してください</p>
 			<?php endif; ?>
         	<?php if (!empty($error)): ?>
 			<p class="error">* 恐れ入りますが、画像を改めて指定してください</p>
