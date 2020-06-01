@@ -33,11 +33,13 @@ try{
 	$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 }catch(PDOException $e){
 	http_response_code(500);
+	exit();
 }
 
 //GETパラメータの検証、数字のみ && 0より大きいか、エラー時は400response
 if(!preg_match("/^[0-9]+$/",$limit)|| $limit <= 0){
 	http_response_code(400);
+	exit();
 }
 
 //DBから値を取ってくる
@@ -53,5 +55,6 @@ $json = json_encode($ans);
 if(json_last_error() === JSON_ERROR_NONE){
 	echo $json;
 }else{
-	http_response_code(500);
+	http_response_code(400);
+	exit();
 }
