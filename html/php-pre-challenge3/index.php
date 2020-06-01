@@ -11,11 +11,11 @@ header('Content-Type: application/json');
 function solve($array,$target){
 	$size = count($array);
 	$res = array();
-	for($i=0;$i < 1<<$size; $i++){
+	for($i = 0; $i < (1 << $size); $i++){
 		$sum = 0;
 		$tmpArray = array();
-		for ($j=0; $j < $size; $j++) { 
-			if($i & (1<<$j)){
+		for ($j = 0; $j < $size; $j++) { 
+			if($i & (1 << $j)){
 				$sum += $array[$j];
 				array_push($tmpArray,intval($array[$j]));
 			}
@@ -27,25 +27,25 @@ function solve($array,$target){
 	return $res;
 }
 
-// DBに接続する、エラー時は500response
-try{
-	$db = new PDO($dsn,$dbuser,$dbpassword);
-	$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-}catch(PDOException $e){
-	http_response_code(500);
-	exit();
-}
-
-//GETパラメータの検証、数字のみ && 0より大きいか、エラー時は400response
-if(!preg_match("/^[0-9]+$/",$limit)|| $limit <= 0){
+//GETパラメータの検証、数字のみ && 0より大きいか、先頭が0でないか、エラー時は400response
+if(!preg_match("/^[0-9]+$/",$limit) || $limit <= 0 || $limit[0] === '0'){
 	http_response_code(400);
 	exit();
 }
 
-//DBから値を取ってくる
-$record = $db->prepare('SELECT value FROM prechallenge3 WHERE value<=? ORDER BY value');
-$record->bindParam(1,$limit,PDO::PARAM_INT);
-$record->execute();
+// DBに接続する、エラー時は500response
+try{
+	$db = new PDO($dsn,$dbuser,$dbpassword);
+	$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+	//DBから値を取ってくる
+	$record = $db->prepare('SELECT value FROM prechallenge3 WHERE value<=? ORDER BY value');
+	$record->bindParam(1,$limit,PDO::PARAM_INT);
+	$record->execute();
+}catch(PDOException $e){
+	http_response_code(500);
+	exit();
+}
 
 //クエリ結果を配列にしてbit全探索
 $values = $record->fetchAll(PDO::FETCH_COLUMN);
