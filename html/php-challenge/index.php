@@ -48,7 +48,7 @@ $start = max(0, $start);
 
 // 投稿データを取得するSQL($_SESSION['id'],$_SESSION['id'],$start)
 $postDataSql = "SELECT m.name, m.picture , postdata.*, rtcount.rtcnt, myrtcount.myrtcnt,likecount.likecnt, mylikecount.mylikecnt FROM members m
-								LEFT JOIN 
+								INNER JOIN 
 								(SELECT p.id,p.message,p.member_id,p.reply_post_id,p.created ,p.created AS postTime, '' AS retweeted_member_name FROM posts p LEFT JOIN retweet r ON p.id=r.post_id 
 								UNION 
 								SELECT p.id,p.message,p.member_id,p.reply_post_id,p.created,r.created AS postTime, m.name AS retweet_member_name FROM posts p RIGHT JOIN retweet r ON p.id=r.post_id  LEFT JOIN members m ON r.retweeted_member_id=m.id) AS postdata 
