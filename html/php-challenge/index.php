@@ -49,9 +49,9 @@ $start = max(0, $start);
 // 投稿データを取得するSQL($_SESSION['id'],$_SESSION['id'],$start)
 $postDataSql = "SELECT m.name, m.picture , postdata.*, rtcount.rtcnt, myrtcount.myrtcnt,likecount.likecnt, mylikecount.mylikecnt FROM members m
 								LEFT JOIN 
-								(SELECT p.id,p.message,p.member_id,p.reply_post_id,p.created ,p.created AS postTime, '' AS retweeted_member_id FROM posts p LEFT JOIN retweet r ON p.id=r.post_id 
+								(SELECT p.id,p.message,p.member_id,p.reply_post_id,p.created ,p.created AS postTime, '' AS retweeted_member_name FROM posts p LEFT JOIN retweet r ON p.id=r.post_id 
 								UNION 
-								SELECT p.id,p.message,p.member_id,p.reply_post_id,p.created,r.created AS postTime, r.retweeted_member_id FROM posts p RIGHT JOIN retweet r ON p.id=r.post_id ) AS postdata 
+								SELECT p.id,p.message,p.member_id,p.reply_post_id,p.created,r.created AS postTime, m.name AS retweet_member_name FROM posts p RIGHT JOIN retweet r ON p.id=r.post_id  LEFT JOIN members m ON r.retweeted_member_id=m.id) AS postdata 
 								ON m.id = postdata.member_id
 								LEFT JOIN
 								(SELECT r.post_id, COUNT(*) AS rtcnt FROM retweet r GROUP BY r.post_id) AS rtcount
@@ -135,6 +135,7 @@ function makeLink($value)
 			?>
 				<div class="msg">
 					<img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
+
 					<p><?php echo makeLink(h($post['message'])); ?><span class="name">（<?php echo h($post['name']); ?>）</span>[<a href="index.php?res=<?php echo h($post['id']); ?>">Re</a>]</p>
 					<p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
 						<?php
